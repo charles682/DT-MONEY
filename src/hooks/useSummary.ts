@@ -1,9 +1,12 @@
+import { useContextSelector } from "use-context-selector";
 import { TransactionsContext } from "../context/TransctionsContext"
-import { useContext } from "react";
+
 
 export function useSummary(){
     // Importa o hook useContext do React para acessar o contexto de transações
-const { transactions } = useContext(TransactionsContext);
+const  transactions  = useContextSelector(TransactionsContext, (context) =>{
+  return context.transactions;
+});
 
 // Calcula um resumo das transações usando o método reduce
 const summary = transactions.reduce(

@@ -3,6 +3,8 @@ import { SearchFormContainer } from "./style";
 import {useForm} from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { TransactionsContext } from "../../../../context/TransctionsContext";
+import { useContextSelector } from "use-context-selector";
 
 
 const searchFormSchema = z.object({
@@ -11,9 +13,11 @@ const searchFormSchema = z.object({
 
 type SearchFormInputs = z.infer<typeof searchFormSchema>;
 
-
-
 export function SearchForm() {
+  const fetchTransactions = useContextSelector(TransactionsContext, (context) =>{
+    return context.fetchTransactions;
+})
+
   const {
     register,
     handleSubmit,
@@ -23,14 +27,14 @@ export function SearchForm() {
   });
 
   async function handleSearchTransactions(data: SearchFormInputs) {
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    console.log(data);
+    await fetchTransactions(data.query)
   }
 
   return (
     <SearchFormContainer onSubmit={handleSubmit(handleSearchTransactions)}>
-      <input type="text" placeholder="Busque por transações" {...register('query')} />
+      <input type="text"
+       placeholder="Busque por transações"
+        {...register('query')} />
 
       <button type="submit" disabled={isSubmitting}>
         <MagnifyingGlass size={20} />
